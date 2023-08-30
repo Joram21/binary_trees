@@ -1,47 +1,34 @@
 #include "binary_trees.h"
 
 /**
-* binary_tree_rotate_right - performs a right-rotation on a binary tree
-* @tree: pointer to the root node of the tree to rotate
-* Return: a pointer to the new root node of the tree once rotated
-* NULL if tree is NULL.
-**/
+ * binary_tree_rotate_right - Right-rotates a binary tree.
+ * @tree: A pointer to the root node of the tree to rotate.
+ *
+ * Return: A pointer to the new root node after rotation.
+ */
 binary_tree_t *binary_tree_rotate_right(binary_tree_t *tree)
 {
-	binary_tree_t *y, *x;
+	binary_tree_t *pivot, *tmp;
 
-	if (tree != NULL)
+	if (tree == NULL || tree->left == NULL)
+		return (NULL);
+
+	pivot = tree->left;
+	tmp = pivot->right;
+	pivot->right = tree;
+	tree->left = tmp;
+	if (tmp != NULL)
+		tmp->parent = tree;
+	tmp = tree->parent;
+	tree->parent = pivot;
+	pivot->parent = tmp;
+	if (tmp != NULL)
 	{
-		x = tree;
-		if ((*x).left != NULL)
-		{
-			y = (*x).left;
-			/*turn y's right subtree into x's left subtree*/
-			(*x).left = (*y).right;
-			if ((*y).right != NULL)
-			{
-				(*(*y).right).parent = x;
-			}
-			/*Link x's parent to y*/
-			(*y).parent = (*x).parent;
-			if ((*x).parent == NULL)
-			{
-				tree = y;
-			}
-			else if (x == (*(*x).parent).right)
-			{
-				(*(*x).parent).right = y;
-			}
-			else
-			{
-				(*(*x).parent).left = y;
-			}
-			/*put x on y's right*/
-			(*y).right = x;
-			(*x).parent = y;
-			return (tree);
-		}
+		if (tmp->left == tree)
+			tmp->left = pivot;
+		else
+			tmp->right = pivot;
 	}
-	return (NULL);
-}
 
+	return (pivot);
+}
